@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajax,jquery,Json</title>
+ <script src="jquery-3.7.1.min.js"></script>
+    <style>
+        div{
+            border: solid 1pt black;
+            width: 500px;height: 150px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Ajax, Jquery,JSON</h1>
+    <h2>Demo Ajax without Jquery</h2>
+    <button onclick="btnLoad()">Ajax without Jquery</button>
+    <div id="demoAjax"></div>
+    <script>
+        function btnLoad(){
+            let xhr=new XMLHttpRequest();
+            xhr.onreadystatechange=function(){
+                if(this.readyState==4 && this.status==200);
+                document.getElementById("demoAjax").innerHTML=this.responseText;
+            };
+            xhr.open("GET","quote.txt",true);
+            xhr.send();
+        }
+    </script>
+
+    <h2>Demo Ajax with Jquery</h2>
+    <button id="btnJquery">Ajax with Jquery</button>
+    <div id="demoJquery"></div>
+    <script>
+      
+            $("#btnJquery").click(function(){
+                $.ajax({url:"quote.txt",success:
+                    function(result){
+                        $("#demoJquery").html(result);
+                    }
+                });
+            });
+    
+    </script>
+    <h2>get json in query</h2>
+    <button id="btnGetJson">Ajax with jquery</button>
+    <div id="studentInfo"></div>
+    <script>
+        $("#btnGetJson").click(function(){
+            $.getJSON("student.json",function(result){
+                $("#studentInfo").html("Name: "+result.sname);
+                $("#studentInfo").append("<br> usn"+result.usn)
+                $("#studentInfo").append("<br> Department"+result.dept);
+            });
+        });
+    </script>
+</body>
+</html>
