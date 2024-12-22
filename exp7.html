@@ -3,82 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JSON,JS,CSV,HASH</title>
+    <title>JSON, JS, CSV, Hash</title>
     <style>
-        div{
-            width:500px;
+        div {
+            width: 500px;
             height: 150px;
             border: solid 1px orangered;
             font-size: large;
+            overflow: auto;
         }
     </style>
 </head>
 <body>
-    <h1>convert JSON to JS</h1>
-<div id="jsonToJS">....</div>
-
+    <h1>Convert JSON to JS</h1>
+    <div id="jsonToJS">...</div>
 
     <h1>Convert JSON to a date</h1>
-    <div id="jsonToDate">....</div>
-    <h1>Convert JSON To CSV,CSV TO JSON</h1>
-    <button onclick="jsonTocsv()" disabled="btnJSON">json To csv</button>
-<div id="jsonCSV"></div>
+    <div id="jsonToDate">...</div>
+
+    <h1>Convert JSON to CSV, CSV to JSON</h1>
+    <button onclick="jsonToCsv()">JSON to CSV</button>
+    <button onclick="csvToJson()" disabled id="btnJSON">CSV to JSON</button>
+    <div id="jsonCSV">...</div>
+    <div id="jsonResult">...</div>
+    <h2>Generating hash using crypto</h2>
+    <label for="ipStr">Enter a string to hash:</label>
+    <input type="text" id="ipStr"><br>
+    <button onclick="hash()">Generate Hash</button><br>
+    <div id="taHash"></div>
+
     <script>
-        //sc
-        var c='{"course":{"code":"BCSL504","cname":"weblab"}}';
-        var jsText=JSON.parse(c);
-        document.getElementById("jsonToJS").innerHTML=jsText.course.code +"<br>";
-        document.getElementById("jsonToJS").innerHTML+=jsText.course.cname;
-        // conert json to date 
+        // Convert JSON to JS
+        var c = '{"course":{"code":"BCL504","cname":"Web Lab","start_date":"2024-09-12","end_date":"2024-12-15"}}';
+        var jsText = JSON.parse(c);
 
-        var c='{"course":{"code":"BCSL504","cname":"weblab","start_date":"2024-09-13","end_date":"2024-11-15"}}';
-        var jsText=JSON.parse(c);
-        const sd=new Date(jsText.course.start_date);
-        const ed=new Date(jsText.course.end_date);
+        document.getElementById("jsonToJS").innerHTML = jsText.course.code + "<br>";
+        document.getElementById("jsonToJS").innerHTML += jsText.course.cname;
 
-        var options={year:'numeric',month:'long',day:'numeric'};
-        document.getElementById("jsonToDate").innerHTML=sd.toLocaleString('tel-gb',options)+"<br>";
-        document.getElementById("jsonToDate").innerHTML+=ed.toLocaleString('kan-gb',options)+"<br>";
-        function jsonTocsv(){
-          let jsonDate=[
-            {"id":1,"usn":"1CR22CS058","sname":"E sai kiran","dept":"cse"},
-            {"id":2,"usn":"1CR22CS062","sname":"Gayathri","dept":"cse"},
+        // Convert JSON to date
+        const sd = new Date(jsText.course.start_date);
+        const ed = new Date(jsText.course.end_date);
 
-          ]
-          let csv='';
-          let headers=Object.keys(jsonDate[0]);
-          csv+=headers.join()+"\n";
-          document.getElementById("jsonCSV").innerHTML=csv;
-          
-          jsonDate.forEach(Obj =>{
-            const values=headers.map(header => Obj[header]);
-            csv+=values.join()+"\n";
-          })
-         document.getElementById("jsonCSV").innerHTML=csv;
-                  document.getElementById("jsonCSV").innerHTML=csv;
+        var options = { year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById("jsonToDate").innerHTML = sd.toLocaleString('en-gb', options) + "<br>";
+        document.getElementById("jsonToDate").innerHTML += ed.toLocaleString('en-gb', options);
 
-          
+        // Convert JSON to CSV
+        function jsonToCsv() {
+            let jsonData = [
+                { "id": 1, "usn": "1CR22CS058", "sname": "saikiran", "dept": "CSE" },
+                { "id": 2, "usn": "1CR22Cs018", "sname": "gayathri", "dept": "ECE" }
+            ];
 
+            let csv = '';
+            
+            let headers = Object.keys(jsonData[0]);
+            csv += headers.join() + "\n";
+
+            jsonData.forEach(obj => {
+                const values = headers.map(header => obj[header]);
+                csv += values.join() + "\n";
+            });
+
+            document.getElementById("jsonCSV").innerHTML = csv;
+            document.getElementById("btnJSON").disabled = false;
         }
-        function csvToJson(){
-            let csvdate=document.getElementById("jsonCSV").innerHTML.trim();
-            let rows=csvDate.split("\n");
-            let headers=rows[0].split(",");
-            let jsonDate=[];
-            for(let i=1;i<rows.length;i++){
-                let values=rows[i].split(",");
-                let obj={}
-                for(let j=0;j<=headers.length;j++){
-                    const key=headers[j];
-                    const value=values[j];
-                    obj[key]=value;
+
+        // Convert CSV to JSON
+        function csvToJson() {
+            let csvData = document.getElementById("jsonCSV").innerHTML.trim();
+            let rows = csvData.split("\n");
+            let headers = rows[0].split(",");
+
+            let jsonData = [];
+            for (let i = 1; i < rows.length; i++) {
+                let values = rows[i].split(",");
+                let obj = {};
+                for (let j = 0; j < headers.length; j++) {
+                    const key = headers[j];
+                    const value = values[j];
+                    obj[key] = value;
                 }
-                jsonDate.push(obj);
+                jsonData.push(obj);
+            }
+
+            document.getElementById("jsonResult").innerHTML = JSON.stringify(jsonData, null, 2);
+            document.getElementById("btnJSON").disabled = true;
+        }
+        function hash(){
+            const a=document.getElementById("ipStr").value;
+            let hash=0;
+            for(i=0;i<a.length;i++){
+                char =a.charCodeAt(i)
+                hash=((hash<<5)- hash)+char;
+                hash=hash&hash;
 
             }
-            document.getElementById("jsonToCSV").innerHTML=JSON.stringify(jsonDate);
-            document.getElementById("btnJSON").disable=true;
+            document.getElementById("taHash").innerHTML=hash;
         }
     </script>
 </body>
-</html>
